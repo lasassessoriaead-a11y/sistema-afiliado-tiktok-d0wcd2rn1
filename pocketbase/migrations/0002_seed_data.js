@@ -187,12 +187,11 @@ migrate(
           r.set('title', s.title)
           r.set('product', pId)
           r.set('hook', s.hook)
-          r.set('development', s.development)
+          r.set('development', s.dev)
           r.set('cta', s.cta)
-          r.set('caption', s.caption)
-          r.set('hashtags', s.hashtags)
-          r.set('best_time', s.best_time)
-          app.save(r)
+          r.set('caption', s.cap)
+          r.set('hashtags', s.hash)
+          r.set('best_time', s.time)          app.save(r)
         }
       }
     })
