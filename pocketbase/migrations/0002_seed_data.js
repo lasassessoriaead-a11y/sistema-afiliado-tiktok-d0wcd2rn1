@@ -191,7 +191,8 @@ migrate(
           r.set('cta', s.cta)
           r.set('caption', s.cap)
           r.set('hashtags', s.hash)
-          r.set('best_time', s.time)          app.save(r)
+          r.set('best_time', s.time)
+          app.save(r)
         }
       }
     })
