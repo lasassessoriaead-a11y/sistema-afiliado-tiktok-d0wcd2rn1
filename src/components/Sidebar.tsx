@@ -10,6 +10,12 @@ import {
   MessageSquare,
   Megaphone,
   GraduationCap,
+  Radio,
+  Lightbulb,
+  Sparkles,
+  Mail,
+  CalendarRange,
+  Send,
   LogOut,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -24,9 +30,16 @@ const navItems = [
   { to: '/calendario', label: 'Calendário', icon: CalendarDays },
   { to: '/comissoes', label: 'Comissões', icon: DollarSign },
   { to: '/plano-dia-1', label: 'Plano Dia 1', icon: ListChecks },
+  { to: '/plano-30-dias', label: 'Plano de 30 Dias', icon: CalendarRange },
   { to: '/consultor-ia', label: 'Consultor IA', icon: MessageSquare },
   { to: '/canais', label: 'Canais de Divulgação', icon: Megaphone },
   { to: '/guia-afiliacao', label: 'Guia de Afiliação', icon: GraduationCap },
+  // Novas seções (incrementais)
+  { to: '/estrategia-lives', label: 'Estratégia de Lives', icon: Radio },
+  { to: '/hooks', label: 'Biblioteca de Hooks', icon: Lightbulb },
+  { to: '/outreach', label: 'Outreach (Amostras)', icon: Send },
+  { to: '/spark-ads', label: 'Spark Ads', icon: Sparkles },
+  { to: '/newsletter', label: 'Newsletter', icon: Mail },
 ]
 
 export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {

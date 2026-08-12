@@ -3,7 +3,18 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
 import { ChartContainer } from '@/components/ui/chart'
 import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
-import { Package, CalendarDays, DollarSign, TrendingUp, History, Target } from 'lucide-react'
+import {
+  Package,
+  CalendarDays,
+  DollarSign,
+  TrendingUp,
+  History,
+  Target,
+  Percent,
+  MousePointerClick,
+  Award,
+  Radio,
+} from 'lucide-react'
 import { getProducts } from '@/services/products'
 import { getPostingCalendar } from '@/services/posting-calendar'
 import { getTrackingRecords } from '@/services/tracking'
@@ -136,6 +147,9 @@ export default function Dashboard() {
         </CardContent>
       </Card>
 
+      {/* Professional KPIs (additive) */}
+      <ProfessionalKpis products={products} tracking={tracking} />
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
           <CardHeader>
@@ -239,6 +253,181 @@ export default function Dashboard() {
           )}
         </CardContent>
       </Card>
+    </div>
+  )
+}
+
+/** Seção adicional de KPIs profissionais (additiva, não altera nada do dashboard original). */
+function ProfessionalKpis({ products, tracking }: { products: any[]; tracking: any[] }) {
+  // Estimativa de visualizações: assume CTR médio de TikTok ~3% para estimar views a partir de cliques.
+  const ESTIMATED_CTR = 0.03
+  const totalClicks = tracking.reduce((s, t) => s + (t.clicks || 0), 0)
+  const totalOrders = tracking.reduce((s, t) => s + (t.orders || 0), 0)
+  const estimatedViews = totalClicks > 0 ? Math.round(totalClicks / ESTIMATED_CTR) : 0
+  const overallCtr = estimatedViews > 0 ? (totalClicks / estimatedViews) * 100 : 0
+  const overallCvr = totalClicks > 0 ? (totalOrders / totalClicks) * 100 : 0
+
+  // Por produto: cliques, pedidos, comissão, CVR estimado e ROAS (comissão / cliques como proxy de retorno por esforço).
+  const perProduct = products
+    .map((p) => {
+      const recs = tracking.filter((t) => t.product === p.id)
+      const clicks = recs.reduce((s, t) => s + (t.clicks || 0), 0)
+      const orders = recs.reduce((s, t) => s + (t.orders || 0), 0)
+      const commission = recs.reduce((s, t) => s + (t.commission || 0), 0)
+      const cvr = clicks > 0 ? (orders / clicks) * 100 : 0
+      const roas = clicks > 0 ? commission / clicks : 0
+      return {
+        id: p.id,
+        name: p.name,
+        clicks,
+        orders,
+        commission,
+        cvr,
+        roas,
+        trending_score: p.trending_score || 0,
+      }
+    })
+    .filter((d) => d.clicks > 0 || d.orders > 0)
+
+  const bestRoas = perProduct.slice().sort((a, b) => b.roas - a.roas)[0]
+
+  // Top 3 produtos do momento por trending_score
+  const top3 = products
+    .slice()
+    .sort((a, b) => (b.trending_score || 0) - (a.trending_score || 0))
+    .slice(0, 3)
+
+  // Meta de lives da semana (2/3 feitas) — localStorage para progresso simples
+  const livesGoal = 3
+  const livesDone =
+    typeof window !== 'undefined'
+      ? Number(window.localStorage.getItem('dashboard_lives_done') || '0')
+      : 0
+
+  const kpiCards = [
+    {
+      label: 'Taxa de Conversão (estimada)',
+      value: `${overallCvr.toFixed(1)}%`,
+      sub: `${totalOrders} pedidos / ${totalClicks} cliques`,
+      icon: Percent,
+      color: 'text-green-500',
+    },
+    {
+      label: 'CTR (Click-Through Rate)',
+      value: `${overallCtr.toFixed(1)}%`,
+      sub: `${totalClicks} cliques / ~${estimatedViews.toLocaleString('pt-BR')} views`,
+      icon: MousePointerClick,
+      color: 'text-cyan-500',
+    },
+    {
+      label: 'Melhor ROAS',
+      value: bestRoas ? `R$ ${bestRoas.roas.toFixed(2)}` : '—',
+      sub: bestRoas ? bestRoas.name.slice(0, 28) : 'Sem dados ainda',
+      icon: Award,
+      color: 'text-yellow-500',
+    },
+    {
+      label: 'Meta de Lives da Semana',
+      value: `${livesDone}/${livesGoal}`,
+      sub: 'Lives feitas esta semana',
+      icon: Radio,
+      color: 'text-red-500',
+    },
+  ]
+
+  return (
+    <div className="space-y-4">
+      <h2 className="text-lg font-semibold flex items-center gap-2">
+        <TrendingUp className="w-5 h-5" /> KPIs Profissionais
+      </h2>
+      <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+        {kpiCards.map((k) => (
+          <Card key={k.label}>
+            <CardContent className="p-5">
+              <div className="flex items-center justify-between">
+                <div>
+                  <p className="text-sm text-muted-foreground">{k.label}</p>
+                  <p className="text-2xl font-bold">{k.value}</p>
+                  <p className="text-xs text-muted-foreground mt-1">{k.sub}</p>
+                </div>
+                <k.icon className={`w-7 h-7 ${k.color}`} />
+              </div>
+            </CardContent>
+          </Card>
+        ))}
+      </div>
+
+      {/* Top 3 produtos do momento (por trending_score) */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Award className="w-5 h-5 text-yellow-500" /> Top 3 Produtos do Momento
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          <div className="space-y-2">
+            {top3.map((p, i) => (
+              <div key={p.id} className="flex items-center justify-between gap-3">
+                <div className="flex items-center gap-2 min-w-0">
+                  <span
+                    className={`text-xs font-bold rounded-full w-6 h-6 flex items-center justify-center shrink-0 ${
+                      i === 0
+                        ? 'bg-yellow-400 text-yellow-950'
+                        : i === 1
+                          ? 'bg-gray-200 text-gray-800'
+                          : 'bg-orange-400 text-orange-950'
+                    }`}
+                  >
+                    {i + 1}
+                  </span>
+                  <span className="text-sm font-medium truncate">{p.name}</span>
+                </div>
+                <div className="flex items-center gap-3 shrink-0">
+                  <span className="text-xs text-muted-foreground">
+                    score {(p.trending_score || 0).toString()}
+                  </span>
+                  <span className="text-sm text-green-600 font-medium">{p.commission_margin}%</span>
+                </div>
+              </div>
+            ))}
+          </div>
+        </CardContent>
+      </Card>
+
+      {/* Conversão estimada por produto */}
+      {perProduct.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <Percent className="w-5 h-5" /> Conversão Estimada por Produto
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <div className="space-y-3">
+              {perProduct
+                .slice()
+                .sort((a, b) => b.cvr - a.cvr)
+                .map((d) => (
+                  <div key={d.id} className="space-y-1">
+                    <div className="flex justify-between text-sm">
+                      <span className="font-medium truncate">{d.name}</span>
+                      <span className="text-muted-foreground shrink-0 ml-2">
+                        {d.cvr.toFixed(1)}% CVR · {d.orders} pedido(s) · R${' '}
+                        {d.commission.toFixed(2)}
+                      </span>
+                    </div>
+                    <div className="h-1.5 w-full rounded-full bg-muted overflow-hidden">
+                      <div
+                        className="h-full rounded-full bg-primary"
+                        style={{ width: `${Math.min(100, d.cvr * 10)}%` }}
+                      />
+                    </div>
+                  </div>
+                ))}
+            </div>
+          </CardContent>
+        </Card>
+      )}
     </div>
   )
 }

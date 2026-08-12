@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-12T15:25:04.987Z",
+  "generatedAt": "2026-08-12T15:44:41.942Z",
   "collections": [
     {
       "name": "users",
@@ -621,6 +621,256 @@
         }
       ],
       "indexes": ["CREATE INDEX idx_channels_type ON promotion_channels (type)"]
+    },
+    {
+      "name": "live_scripts",
+      "type": "base",
+      "apiRules": {
+        "list": "@request.auth.id != ''",
+        "view": "@request.auth.id != ''",
+        "create": null,
+        "update": null,
+        "delete": null
+      },
+      "fields": [
+        {
+          "name": "title",
+          "type": "text",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "duration_min",
+          "type": "number",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "opening",
+          "type": "text",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "presentation",
+          "type": "text",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "demonstration",
+          "type": "text",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "objections",
+          "type": "text",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "offers",
+          "type": "text",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "cta",
+          "type": "text",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "created",
+          "type": "autodate",
+          "required": false,
+          "system": false,
+          "autodateTriggers": ["onCreate"]
+        },
+        {
+          "name": "updated",
+          "type": "autodate",
+          "required": false,
+          "system": false,
+          "autodateTriggers": ["onCreate", "onUpdate"]
+        }
+      ],
+      "indexes": []
+    },
+    {
+      "name": "hooks_library",
+      "type": "base",
+      "apiRules": {
+        "list": "@request.auth.id != ''",
+        "view": "@request.auth.id != ''",
+        "create": null,
+        "update": null,
+        "delete": null
+      },
+      "fields": [
+        {
+          "name": "category",
+          "type": "select",
+          "required": true,
+          "system": false,
+          "selectValues": [
+            "Curiosidade",
+            "Choque/Surpresa",
+            "Problema/Solução",
+            "Antes/Depois",
+            "TikTok Made Me Buy It",
+            "POV/Storytelling",
+            "Urgência/Escassez",
+            "Comparação"
+          ]
+        },
+        {
+          "name": "hook_text",
+          "type": "text",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "example",
+          "type": "text",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "created",
+          "type": "autodate",
+          "required": false,
+          "system": false,
+          "autodateTriggers": ["onCreate"]
+        },
+        {
+          "name": "updated",
+          "type": "autodate",
+          "required": false,
+          "system": false,
+          "autodateTriggers": ["onCreate", "onUpdate"]
+        }
+      ],
+      "indexes": ["CREATE INDEX idx_hooks_category ON hooks_library (category)"]
+    },
+    {
+      "name": "outreach_scripts",
+      "type": "base",
+      "apiRules": {
+        "list": "@request.auth.id != ''",
+        "view": "@request.auth.id != ''",
+        "create": null,
+        "update": null,
+        "delete": null
+      },
+      "fields": [
+        {
+          "name": "tone",
+          "type": "select",
+          "required": true,
+          "system": false,
+          "selectValues": ["Formal", "Casual", "Baseado em dados", "Curto e direto", "Follow-up"]
+        },
+        {
+          "name": "channel",
+          "type": "select",
+          "required": true,
+          "system": false,
+          "selectValues": ["TikTok DM", "Instagram DM", "Email"]
+        },
+        {
+          "name": "message",
+          "type": "text",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "created",
+          "type": "autodate",
+          "required": false,
+          "system": false,
+          "autodateTriggers": ["onCreate"]
+        },
+        {
+          "name": "updated",
+          "type": "autodate",
+          "required": false,
+          "system": false,
+          "autodateTriggers": ["onCreate", "onUpdate"]
+        }
+      ],
+      "indexes": ["CREATE INDEX idx_outreach_tone ON outreach_scripts (tone)"]
+    },
+    {
+      "name": "newsletter_editions",
+      "type": "base",
+      "apiRules": {
+        "list": "@request.auth.id != ''",
+        "view": "@request.auth.id != ''",
+        "create": null,
+        "update": null,
+        "delete": null
+      },
+      "fields": [
+        {
+          "name": "edition_number",
+          "type": "number",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "subject",
+          "type": "text",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "product_of_week",
+          "type": "text",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "hook_trending",
+          "type": "text",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "quick_tip",
+          "type": "text",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "behind_scenes",
+          "type": "text",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "cta_text",
+          "type": "text",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "created",
+          "type": "autodate",
+          "required": false,
+          "system": false,
+          "autodateTriggers": ["onCreate"]
+        },
+        {
+          "name": "updated",
+          "type": "autodate",
+          "required": false,
+          "system": false,
+          "autodateTriggers": ["onCreate", "onUpdate"]
+        }
+      ],
+      "indexes": ["CREATE INDEX idx_newsletter_edition ON newsletter_editions (edition_number)"]
     }
   ]
 }

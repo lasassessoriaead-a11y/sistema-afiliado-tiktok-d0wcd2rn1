@@ -13,9 +13,15 @@ import Funnel from '@/pages/Funnel'
 import Calendar from '@/pages/Calendar'
 import Commissions from '@/pages/Commissions'
 import PlanDay1 from '@/pages/PlanDay1'
+import Plan30Days from '@/pages/Plan30Days'
 import Consultant from '@/pages/Consultant'
 import PromotionChannels from '@/pages/PromotionChannels'
 import AffiliationGuide from '@/pages/AffiliationGuide'
+import LiveStrategy from '@/pages/LiveStrategy'
+import HooksLibrary from '@/pages/HooksLibrary'
+import Outreach from '@/pages/Outreach'
+import SparkAds from '@/pages/SparkAds'
+import Newsletter from '@/pages/Newsletter'
 import NotFound from '@/pages/NotFound'
 
 const App = () => (
@@ -40,9 +46,16 @@ const App = () => (
             <Route path="/calendario" element={<Calendar />} />
             <Route path="/comissoes" element={<Commissions />} />
             <Route path="/plano-dia-1" element={<PlanDay1 />} />
+            <Route path="/plano-30-dias" element={<Plan30Days />} />
             <Route path="/consultor-ia" element={<Consultant />} />
             <Route path="/canais" element={<PromotionChannels />} />
             <Route path="/guia-afiliacao" element={<AffiliationGuide />} />
+            {/* Novas rotas (incrementais) */}
+            <Route path="/estrategia-lives" element={<LiveStrategy />} />
+            <Route path="/hooks" element={<HooksLibrary />} />
+            <Route path="/outreach" element={<Outreach />} />
+            <Route path="/spark-ads" element={<SparkAds />} />
+            <Route path="/newsletter" element={<Newsletter />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>

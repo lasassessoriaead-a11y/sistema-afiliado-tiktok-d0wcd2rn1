@@ -88,6 +88,13 @@ export default function Products() {
   // The list currently displayed depends on the active view.
   const displayed = trendingView && trendingProducts.length > 0 ? trendingProducts : products
 
+  // Produto Hero: #1 do ranking trending (maior trending_score com position 1, se houver).
+  const heroProduct =
+    products
+      .slice()
+      .sort((a: any, b: any) => (b.trending_score || 0) - (a.trending_score || 0))[0] || null
+  const heroId = heroProduct?.id || null
+
   const showSkeletons = loading || (trendingView && searching && trendingProducts.length === 0)
 
   if (showSkeletons)
@@ -115,17 +122,48 @@ export default function Products() {
         trendingView={trendingView}
         setTrendingView={setTrendingView}
       />
+      {/* Banner Produto Hero — aparece quando "Em Alta" está ativo */}
+      {trendingView && heroProduct && (
+        <div className="rounded-xl border-2 border-yellow-400 bg-gradient-to-r from-yellow-50 via-amber-50 to-orange-50 dark:from-yellow-950/30 dark:via-amber-950/30 dark:to-orange-950/30 p-5 shadow-sm">
+          <div className="flex items-start gap-3">
+            <span className="text-2xl">⭐</span>
+            <div className="flex-1">
+              <h2 className="text-lg font-bold text-amber-900 dark:text-amber-200">
+                Produto Hero: {heroProduct.name}
+              </h2>
+              <p className="text-sm text-amber-800 dark:text-amber-300 mt-1">
+                {heroProduct.commission_margin}% de comissão! Priorize este produto nos seus vídeos
+                — é o #1 do ranking trending (score {heroProduct.trending_score || 0}/100) com maior
+                potencial de viralização e conversão.
+              </p>
+            </div>
+          </div>
+        </div>
+      )}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
         {displayed.map((p) => {
           const score = Number(p.trending_score || 0)
           const position = Number(p.trending_position || 0)
           const showTrending = trendingView && position > 0
+          const isHero = p.id === heroId
           return (
-            <Card key={p.id} className="hover:shadow-lg transition-shadow duration-300 relative">
+            <Card
+              key={p.id}
+              className={`hover:shadow-lg transition-shadow duration-300 relative ${
+                isHero ? 'ring-2 ring-yellow-400 shadow-md' : ''
+              }`}
+            >
               {showTrending && (
                 <div className="absolute -top-2 -left-2 z-10">
                   <Badge className={`border ${positionBadgeClass(position)} shadow-sm`}>
                     #{position}
+                  </Badge>
+                </div>
+              )}
+              {isHero && (
+                <div className="absolute -top-2 -right-2 z-10">
+                  <Badge className="bg-yellow-400 text-yellow-950 border border-yellow-500 shadow-sm">
+                    ⭐ Hero
                   </Badge>
                 </div>
               )}
