@@ -14,6 +14,8 @@ import Calendar from '@/pages/Calendar'
 import Commissions from '@/pages/Commissions'
 import PlanDay1 from '@/pages/PlanDay1'
 import Consultant from '@/pages/Consultant'
+import PromotionChannels from '@/pages/PromotionChannels'
+import AffiliationGuide from '@/pages/AffiliationGuide'
 import NotFound from '@/pages/NotFound'
 
 const App = () => (
@@ -39,6 +41,8 @@ const App = () => (
             <Route path="/comissoes" element={<Commissions />} />
             <Route path="/plano-dia-1" element={<PlanDay1 />} />
             <Route path="/consultor-ia" element={<Consultant />} />
+            <Route path="/canais" element={<PromotionChannels />} />
+            <Route path="/guia-afiliacao" element={<AffiliationGuide />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>

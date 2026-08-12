@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-09T19:12:40.030Z",
+  "generatedAt": "2026-08-12T13:33:53.027Z",
   "collections": [
     {
       "name": "users",
@@ -62,13 +62,6 @@
           "system": false
         },
         {
-          "name": "category",
-          "type": "select",
-          "required": true,
-          "system": false,
-          "selectValues": ["Beleza", "Casa", "Cozinha", "Organização"]
-        },
-        {
           "name": "average_price",
           "type": "number",
           "required": true,
@@ -105,6 +98,21 @@
           "required": false,
           "system": false,
           "autodateTriggers": ["onCreate", "onUpdate"]
+        },
+        {
+          "name": "category",
+          "type": "select",
+          "required": true,
+          "system": false,
+          "selectValues": [
+            "Beleza",
+            "Casa",
+            "Cozinha",
+            "Organização",
+            "Bem-estar",
+            "Acessórios Tech",
+            "Utilidades"
+          ]
         }
       ],
       "indexes": ["CREATE INDEX idx_products_category ON products (category)"]
@@ -527,6 +535,71 @@
         }
       ],
       "indexes": []
+    },
+    {
+      "name": "promotion_channels",
+      "type": "base",
+      "apiRules": {
+        "list": "@request.auth.id != ''",
+        "view": "@request.auth.id != ''",
+        "create": null,
+        "update": null,
+        "delete": null
+      },
+      "fields": [
+        {
+          "name": "type",
+          "type": "select",
+          "required": true,
+          "system": false,
+          "selectValues": ["Facebook", "Telegram", "WhatsApp"]
+        },
+        {
+          "name": "name",
+          "type": "text",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "link",
+          "type": "url",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "members",
+          "type": "text",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "ready_message",
+          "type": "text",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "how_to_join",
+          "type": "text",
+          "required": true,
+          "system": false
+        },
+        {
+          "name": "created",
+          "type": "autodate",
+          "required": false,
+          "system": false,
+          "autodateTriggers": ["onCreate"]
+        },
+        {
+          "name": "updated",
+          "type": "autodate",
+          "required": false,
+          "system": false,
+          "autodateTriggers": ["onCreate", "onUpdate"]
+        }
+      ],
+      "indexes": ["CREATE INDEX idx_channels_type ON promotion_channels (type)"]
     }
   ]
 }

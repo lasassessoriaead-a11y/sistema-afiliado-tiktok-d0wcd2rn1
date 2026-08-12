@@ -10,6 +10,9 @@ const categoryColors: Record<string, string> = {
   Casa: 'bg-blue-100 text-blue-700',
   Cozinha: 'bg-orange-100 text-orange-700',
   Organização: 'bg-green-100 text-green-700',
+  'Bem-estar': 'bg-teal-100 text-teal-700',
+  'Acessórios Tech': 'bg-purple-100 text-purple-700',
+  Utilidades: 'bg-amber-100 text-amber-700',
 }
 
 export default function Products() {

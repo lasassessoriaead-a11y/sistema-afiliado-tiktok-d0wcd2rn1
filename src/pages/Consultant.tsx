@@ -6,6 +6,14 @@ import { Send, Bot, User } from 'lucide-react'
 import { chatWithAgent } from '@/services/agent'
 import { cn } from '@/lib/utils'
 
+const suggestions = [
+  'Como aumentar minha taxa de conversão?',
+  'Qual o melhor horário para postar?',
+  'Como criar um gancho que prende a atenção?',
+  'Quais hashtags usar hoje?',
+  'Como divulgar sem ter seguidores?',
+]
+
 interface Message {
   role: 'user' | 'assistant'
   content: string
@@ -17,6 +25,7 @@ export default function Consultant() {
   const [loading, setLoading] = useState(false)
   const [conversationId, setConversationId] = useState<string | null>(null)
   const scrollRef = useRef<HTMLDivElement>(null)
+  const inputRef = useRef<HTMLInputElement>(null)
 
   useEffect(() => {
     scrollRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -110,6 +119,26 @@ export default function Consultant() {
               <Send className="w-4 h-4" />
             </Button>
           </form>
+          <div className="px-4 pb-4">
+            <p className="text-xs text-muted-foreground mb-2">Sugestões de perguntas:</p>
+            <div className="flex flex-wrap gap-2">
+              {suggestions.map((s) => (
+                <Button
+                  key={s}
+                  variant="secondary"
+                  size="sm"
+                  className="text-xs h-8"
+                  onClick={() => {
+                    setInput(s)
+                    inputRef.current?.focus()
+                  }}
+                  disabled={loading}
+                >
+                  {s}
+                </Button>
+              ))}
+            </div>
+          </div>
         </CardContent>
       </Card>
     </div>

@@ -46,7 +46,7 @@ export default function PlanDay1() {
     setCompleted(newCompleted)
     try {
       if (progressId) {
-        await updatePlanProgress(progressId, newCompleted)
+        await updatePlanProgress(progressId, { completed_steps: newCompleted })
       } else {
         const created = await createPlanProgress({ owner: user!.id, completed_steps: newCompleted })
         setProgressId(created.id)

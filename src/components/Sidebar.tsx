@@ -8,6 +8,8 @@ import {
   DollarSign,
   ListChecks,
   MessageSquare,
+  Megaphone,
+  GraduationCap,
   LogOut,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -23,6 +25,8 @@ const navItems = [
   { to: '/comissoes', label: 'Comissões', icon: DollarSign },
   { to: '/plano-dia-1', label: 'Plano Dia 1', icon: ListChecks },
   { to: '/consultor-ia', label: 'Consultor IA', icon: MessageSquare },
+  { to: '/canais', label: 'Canais de Divulgação', icon: Megaphone },
+  { to: '/guia-afiliacao', label: 'Guia de Afiliação', icon: GraduationCap },
 ]
 
 export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {

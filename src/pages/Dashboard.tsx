@@ -1,7 +1,9 @@
 import { useEffect, useState } from 'react'
 import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Skeleton } from '@/components/ui/skeleton'
-import { Package, CalendarDays, DollarSign, TrendingUp } from 'lucide-react'
+import { ChartContainer } from '@/components/ui/chart'
+import { BarChart, Bar, XAxis, YAxis, CartesianGrid, Tooltip, ResponsiveContainer } from 'recharts'
+import { Package, CalendarDays, DollarSign, TrendingUp, History, Target } from 'lucide-react'
 import { getProducts } from '@/services/products'
 import { getPostingCalendar } from '@/services/posting-calendar'
 import { getTrackingRecords } from '@/services/tracking'
@@ -36,6 +38,32 @@ export default function Dashboard() {
   const totalClicks = tracking.reduce((s, t) => s + (t.clicks || 0), 0)
   const totalOrders = tracking.reduce((s, t) => s + (t.orders || 0), 0)
   const nextPost = calendar[0]
+
+  // Commission by product (chart)
+  const commissionByProduct = products
+    .map((p) => {
+      const sum = tracking
+        .filter((t) => t.product === p.id)
+        .reduce((s, t) => s + (t.commission || 0), 0)
+      return { name: p.name.length > 18 ? p.name.slice(0, 18) + '…' : p.name, comissao: sum }
+    })
+    .filter((d) => d.comissao > 0)
+    .sort((a, b) => b.comissao - a.comissao)
+    .slice(0, 6)
+
+  // Recent activity (last 5 tracking records, already sorted -date)
+  const recentActivity = tracking.slice(0, 5)
+
+  // Monthly goal + progress
+  const monthlyGoal = 500
+  const now = new Date()
+  const monthCommission = tracking
+    .filter((t) => {
+      const d = new Date(t.date)
+      return d.getMonth() === now.getMonth() && d.getFullYear() === now.getFullYear()
+    })
+    .reduce((s, t) => s + (t.commission || 0), 0)
+  const goalPct = Math.min(100, Math.round((monthCommission / monthlyGoal) * 100))
 
   const stats = [
     { label: 'Produtos', value: products.length, icon: Package, color: 'text-pink-500' },
@@ -86,6 +114,28 @@ export default function Dashboard() {
           </Card>
         ))}
       </div>
+      {/* Monthly goal */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <Target className="w-5 h-5" /> Meta de Ganhos do Mês
+          </CardTitle>
+        </CardHeader>
+        <CardContent className="space-y-2">
+          <div className="flex justify-between text-sm">
+            <span className="text-muted-foreground">Progresso até R$ {monthlyGoal.toFixed(2)}</span>
+            <span className="font-medium">R$ {monthCommission.toFixed(2)}</span>
+          </div>
+          <div className="w-full bg-muted rounded-full h-3 overflow-hidden">
+            <div
+              className="h-full bg-primary transition-all duration-500"
+              style={{ width: `${goalPct}%` }}
+            />
+          </div>
+          <p className="text-xs text-muted-foreground">{goalPct}% da meta atingida</p>
+        </CardContent>
+      </Card>
+
       <div className="grid grid-cols-1 lg:grid-cols-2 gap-6">
         <Card>
           <CardHeader>
@@ -127,6 +177,68 @@ export default function Dashboard() {
           </CardContent>
         </Card>
       </div>
+
+      {/* Commission chart by product */}
+      {commissionByProduct.length > 0 && (
+        <Card>
+          <CardHeader>
+            <CardTitle className="flex items-center gap-2">
+              <DollarSign className="w-5 h-5" /> Comissões por Produto
+            </CardTitle>
+          </CardHeader>
+          <CardContent>
+            <ChartContainer
+              config={{ comissao: { label: 'Comissão', color: 'hsl(var(--primary))' } }}
+              className="h-64"
+            >
+              <ResponsiveContainer width="100%" height="100%">
+                <BarChart data={commissionByProduct} layout="vertical">
+                  <CartesianGrid
+                    strokeDasharray="3 3"
+                    className="stroke-muted"
+                    horizontal={false}
+                  />
+                  <XAxis type="number" className="text-xs" />
+                  <YAxis dataKey="name" type="category" width={120} className="text-xs" />
+                  <Tooltip formatter={(v: number) => `R$ ${v.toFixed(2)}`} />
+                  <Bar dataKey="comissao" fill="hsl(var(--primary))" radius={4} />
+                </BarChart>
+              </ResponsiveContainer>
+            </ChartContainer>
+          </CardContent>
+        </Card>
+      )}
+
+      {/* Recent activity */}
+      <Card>
+        <CardHeader>
+          <CardTitle className="flex items-center gap-2">
+            <History className="w-5 h-5" /> Atividade Recente
+          </CardTitle>
+        </CardHeader>
+        <CardContent>
+          {recentActivity.length === 0 ? (
+            <p className="text-muted-foreground text-sm">Nenhuma atividade registrada ainda.</p>
+          ) : (
+            <div className="space-y-3">
+              {recentActivity.map((r) => (
+                <div key={r.id} className="flex items-center justify-between gap-3 text-sm">
+                  <div className="min-w-0">
+                    <p className="font-medium truncate">{r.expand?.product?.name || 'Produto'}</p>
+                    <p className="text-xs text-muted-foreground">
+                      {new Date(r.date).toLocaleDateString('pt-BR')} · {r.source} · {r.orders}{' '}
+                      pedido(s)
+                    </p>
+                  </div>
+                  <span className="font-medium text-green-600 shrink-0">
+                    +R$ {(r.commission || 0).toFixed(2)}
+                  </span>
+                </div>
+              ))}
+            </div>
+          )}
+        </CardContent>
+      </Card>
     </div>
   )
 }
