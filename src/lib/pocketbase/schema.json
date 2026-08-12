@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-08-12T13:33:53.027Z",
+  "generatedAt": "2026-08-12T15:25:04.987Z",
   "collections": [
     {
       "name": "users",
@@ -113,9 +113,30 @@
             "Acessórios Tech",
             "Utilidades"
           ]
+        },
+        {
+          "name": "trending_score",
+          "type": "number",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "trending_position",
+          "type": "number",
+          "required": false,
+          "system": false
+        },
+        {
+          "name": "source",
+          "type": "text",
+          "required": false,
+          "system": false
         }
       ],
-      "indexes": ["CREATE INDEX idx_products_category ON products (category)"]
+      "indexes": [
+        "CREATE INDEX idx_products_category ON products (category)",
+        "CREATE INDEX `idx_products_trending` ON `products` (trending_position)"
+      ]
     },
     {
       "name": "scripts",
