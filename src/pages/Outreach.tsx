@@ -3,33 +3,29 @@ import { Card, CardContent, CardHeader, CardTitle } from '@/components/ui/card'
 import { Badge } from '@/components/ui/badge'
 import { Button } from '@/components/ui/button'
 import { Skeleton } from '@/components/ui/skeleton'
-import {
-  Accordion,
-  AccordionContent,
-  AccordionItem,
-  AccordionTrigger,
-} from '@/components/ui/accordion'
 import { useToast } from '@/hooks/use-toast'
 import { useRealtime } from '@/hooks/use-realtime'
 import { getOutreachScripts, type OutreachScript } from '@/services/content-library'
 import { Mail, Copy, ExternalLink, CheckCircle2, Sparkles } from 'lucide-react'
 
-const emailTemplate = `Assunto: Parceria de product seeding — [SEU PERFIL] x [MARCA]
+const emailTemplate = `Assunto: Criador iniciante interessado em [PRODUTO] | Review honesto
 
-Prezado(a) time da [MARCA],
+Oi, equipe da [MARCA]!
 
-Meu nome é [SEU NOME], sou criador(a) de conteúdo no TikTok (@[SEU PERFIL]) com foco em [SEU NICHO]. Tenho [X] mil seguidores engajados e média de [Y] mil visualizações por vídeo.
+Meu nome é [SEU NOME] e estou começando agora como afiliado(a) no TikTok Shop
+(@[SEU PERFIL]), com conteúdo 100% focado em [SEU NICHO]. Ainda estou
+construindo minha audiência, mas meu engajamento é muito alto e meu público é
+super alinhado ao nicho de vocês.
 
-Acompanho a [MARCA] e acredito que o produto [NOME DO PRODUTO] tem enorme potencial com meu público — que é 80% [faixa etária/gênero] alinhado ao produto.
+O produto [NOME DO PRODUTO] me chamou muita atenção e eu adoraria testar para
+fazer um review honesto no meu perfil. Por isso queria saber:
 
-Gostaria de propor uma parceria de product seeding:
-• Solicito 1 amostra do [PRODUTO] para criação de conteúdo orgânico
-• Em troca ofereço: 1 vídeo principal no TikTok, 2 stories e menção na bio por 7 dias
-• Todo conteúdo seguirá as diretrizes da marca e pode ser usado por vocês
+• Vocês teriam alguma amostra ou programa para criadores iniciantes?
+• Em troca ofereço: 1 vídeo de review sincero no TikTok + 2 stories, seguindo
+  todas as diretrizes da marca.
 
-Já sou afiliado(a) de vocês no TikTok Shop e gerei [Z] vendas no último mês — anexo mídia kit com métricas.
-
-Agradeço a atenção e fico à disposição.
+Sei que ainda sou um criador pequeno, mas garanto conteúdo caprichado e
+verdadeiro. Caso não seja possível agora, entendo e agradeço mesmo assim! 🙏
 
 Atenciosamente,
 [SEU NOME]
@@ -127,6 +123,15 @@ export default function Outreach() {
     'Follow-up': 'bg-pink-100 text-pink-700',
   }
 
+  // Títulos amigáveis para os scripts de iniciante (o `tone` continua como badge)
+  const scriptTitles: Record<string, string> = {
+    Formal: 'Estou começando agora',
+    Casual: 'Já testei produtos similares',
+    'Baseado em dados': 'Conteúdo de nicho',
+    'Curto e direto': 'Curto e direto (DM)',
+    'Follow-up': 'Follow-up educado',
+  }
+
   if (loading)
     return (
       <div className="space-y-4">
@@ -146,8 +151,10 @@ export default function Outreach() {
           <Mail className="w-6 h-6 text-blue-500" /> Scripts de Outreach
         </h1>
         <p className="text-muted-foreground">
-          Scripts prontos para pedir amostras grátis às marcas (product seeding). Copie, adapte com
-          seus dados e suas métricas reais, e envie via TikTok DM, Instagram DM ou email.
+          Scripts prontos para pedir amostras grátis às marcas — escritos para quem está{' '}
+          <strong>começando do zero</strong>, sem audiência. Tom humilde e realista: mostre
+          disposição de testar e criar conteúdo honesto, sem fingir que já é conhecido. Copie,
+          adapte com seus dados e envie via TikTok DM, Instagram DM ou email.
         </p>
       </div>
 
@@ -155,11 +162,12 @@ export default function Outreach() {
         <CardContent className="p-4 flex gap-3 items-start">
           <Sparkles className="w-5 h-5 text-primary shrink-0 mt-0.5" />
           <div className="text-sm space-y-1">
-            <p className="font-medium">Dica de ouro</p>
+            <p className="font-medium">Dica de ouro para iniciantes</p>
             <p className="text-muted-foreground">
-              Marcas respondem criadores que já trazem resultado. Antes de pedir amostra, seja
-              afiliado da marca por 1-2 semanas e gere ao menos 5 vendas. Mostre os números na
-              mensagem — a taxa de resposta dobra.
+              Comece pelas marcas <strong>menores e regionais</strong> — elas têm menos concorrência
+              e respondem muito mais criadores pequenos. Marcas grandes raramente respondem quem
+              ainda não tem audiência. Priorize marcas brasileiras acessíveis e seja sempre honesto
+              sobre o seu tamanho: transparência converte mais do que inflar números.
             </p>
           </div>
         </CardContent>
@@ -173,7 +181,7 @@ export default function Outreach() {
             <Card key={s.id} className="flex flex-col">
               <CardHeader>
                 <div className="flex items-center justify-between gap-2">
-                  <CardTitle className="text-base">{s.tone}</CardTitle>
+                  <CardTitle className="text-base">{scriptTitles[s.tone] || s.tone}</CardTitle>
                   <div className="flex gap-1">
                     <Badge variant="outline">{s.channel}</Badge>
                     <Badge className={toneColors[s.tone] || 'bg-gray-100'}>{s.tone}</Badge>
@@ -220,8 +228,16 @@ export default function Outreach() {
         <h2 className="text-lg font-semibold mb-1">🏷️ 10 Marcas que Oferecem Amostras Grátis</h2>
         <p className="text-sm text-muted-foreground mb-3">
           Marcas com programas de creators / product seeding no TikTok Shop Brasil. Acesse o site,
-          encontre o programa de creators e aplique com seus números de afiliado.
+          encontre o programa de creators e aplique como criador iniciante — sem medo de informar
+          que está começando agora.
         </p>
+        <Card className="border-amber-300 bg-amber-50 mb-3">
+          <CardContent className="p-3 text-sm text-amber-900">
+            ⚠️ <strong>Comece pelas marcas menores</strong> (menos concorrência). Marcas grandes
+            raramente respondem criadores pequenos. Priorize marcas brasileiras/regionais, que são
+            mais acessíveis e abertas a micro-criadores.
+          </CardContent>
+        </Card>
         <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
           {seedBrands.map((b) => (
             <Card key={b.name}>
@@ -249,29 +265,33 @@ export default function Outreach() {
           </CardTitle>
         </CardHeader>
         <CardContent>
-          <Accordion type="single" collapsible>
-            <AccordionItem value="timing" className="border-0">
-              <AccordionTrigger className="text-sm">Tempo ideal de espera</AccordionTrigger>
-              <AccordionContent className="text-sm text-muted-foreground">
-                Espere 5 dias úteis antes do follow-up. Marcas recebem dezenas de pitches por dia —
-                o follow-up mostra persistência sem ser inconveniente. Use o tom "Follow-up" acima.
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="channels" className="border-0">
-              <AccordionTrigger className="text-sm">Em qual canal insistir</AccordionTrigger>
-              <AccordionContent className="text-sm text-muted-foreground">
-                Se mandou por email e não respondeu, tente Instagram DM da marca no follow-up.
-                Multi-canal aumenta a taxa de resposta em 60%.
-              </AccordionContent>
-            </AccordionItem>
-            <AccordionItem value="nos" className="border-0">
-              <AccordionTrigger className="text-sm">Quantos follow-ups mandar</AccordionTrigger>
-              <AccordionContent className="text-sm text-muted-foreground">
-                No máximo 2 follow-ups (3 contatos no total). Depois disso, espere 30 dias e tente
-                novamente com novos números de desempenho. Respeitar o "não" mantém a porta aberta.
-              </AccordionContent>
-            </AccordionItem>
-          </Accordion>
+          <div className="space-y-3">
+            <div className="flex items-start gap-3 p-3 rounded-lg bg-muted/50">
+              <Badge className="bg-blue-100 text-blue-700 shrink-0">Dia 1</Badge>
+              <p className="text-sm text-muted-foreground">
+                <strong className="text-foreground">Primeiro contato.</strong> Use o script "Estou
+                começando agora" ou "Conteúdo de nicho". Seja breve, honesto e mostre que já conhece
+                o produto.
+              </p>
+            </div>
+            <div className="flex items-start gap-3 p-3 rounded-lg bg-muted/50">
+              <Badge className="bg-amber-100 text-amber-700 shrink-0">Dia 5</Badge>
+              <p className="text-sm text-muted-foreground">
+                <strong className="text-foreground">Follow-up educado.</strong> Sem resposta? Use o
+                script "Follow-up educado". Entenda a correria do dia a dia da marca e reafirme o
+                interesse.
+              </p>
+            </div>
+            <div className="flex items-start gap-3 p-3 rounded-lg bg-muted/50">
+              <Badge className="bg-green-100 text-green-700 shrink-0">Dia 10</Badge>
+              <p className="text-sm text-muted-foreground">
+                <strong className="text-foreground">Último follow-up.</strong> Se ainda sem
+                resposta, mande um último toque e <strong>sigam em frente</strong>. Respeitar o
+                "não" (ou o silêncio) mantém a porta aberta para o futuro — tente novamente em 30
+                dias já com novos vídeos e métricas.
+              </p>
+            </div>
+          </div>
         </CardContent>
       </Card>
     </div>

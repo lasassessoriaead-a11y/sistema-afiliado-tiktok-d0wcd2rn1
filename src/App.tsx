@@ -22,6 +22,7 @@ import HooksLibrary from '@/pages/HooksLibrary'
 import Outreach from '@/pages/Outreach'
 import SparkAds from '@/pages/SparkAds'
 import Newsletter from '@/pages/Newsletter'
+import JornadaDoZero from '@/pages/JornadaDoZero'
 import NotFound from '@/pages/NotFound'
 
 const App = () => (
@@ -56,6 +57,7 @@ const App = () => (
             <Route path="/outreach" element={<Outreach />} />
             <Route path="/spark-ads" element={<SparkAds />} />
             <Route path="/newsletter" element={<Newsletter />} />
+            <Route path="/jornada-do-zero" element={<JornadaDoZero />} />
           </Route>
           <Route path="*" element={<NotFound />} />
         </Routes>

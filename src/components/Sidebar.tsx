@@ -16,6 +16,7 @@ import {
   Mail,
   CalendarRange,
   Send,
+  Map,
   LogOut,
 } from 'lucide-react'
 import { cn } from '@/lib/utils'
@@ -40,6 +41,7 @@ const navItems = [
   { to: '/outreach', label: 'Outreach (Amostras)', icon: Send },
   { to: '/spark-ads', label: 'Spark Ads', icon: Sparkles },
   { to: '/newsletter', label: 'Newsletter', icon: Mail },
+  { to: '/jornada-do-zero', label: 'Jornada do Zero', icon: Map },
 ]
 
 export function Sidebar({ onNavigate }: { onNavigate?: () => void }) {
